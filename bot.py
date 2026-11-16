@@ -17,11 +17,11 @@ OPENAI_KEY=os.getenv('OPENAI_API_KEY'); IMAGE_MODEL=os.getenv('OPENAI_IMAGE_MODE
 if not GROQ_KEY: raise RuntimeError('Missing GROQ secret')
 groq=AsyncGroq(api_key=GROQ_KEY); openai=AsyncOpenAI(api_key=OPENAI_KEY) if OPENAI_KEY else None
 db=None; locks={}
-SYSTEM='''أنت مساعد ذكي عام واحترافي. أجب مباشرة دون مقدمة تعريفية متكررة أو تحية آلية أو تكرار اسم الشركة. استخدم لغة المستخدم، وقدّم إجابات واضحة وعملية ومنظمة. ساعد في البرمجة والتقنية وتطوير التطبيقات والمواقع وتحليل المستندات والصور وصناعة المحتوى. لا تدّع تنفيذ إجراءات لم تنفذها ولا تخترع معلومات. اسم الجهة المالكة عند السؤال عن هويتك هو GLOBALHOLMES LTD، وهي شركة تقنية وبرمجية وإعلامية.'''
-WELCOME='اكتب رسالة ترحيب عربية قصيرة وطبيعية لمستخدم بدأ محادثة مع مساعد ذكاء اصطناعي تابع لـ GLOBALHOLMES LTD. اذكر بإيجاز إمكانية المساعدة في الأسئلة والبرمجة وتحليل الصور والملفات، وادعُ المستخدم لإرسال طلبه. لا تتجاوز 3 أسطر.'
+SYSTEM='''أنت مساعد ذكي عام واحترافي. أجب مباشرة دون مقدمة تعريفية متكررة أو تحية آلية أو تكرار اسم الشركة. استخدم لغة المستخدم، وقدّم إجابات واضحة وعملية ومنظمة. ساعد في البرمجة والتقنية وتطوير التطبيقات والمواقع وتحليل المستندات والصور وصناعة المحتوى. لا تدّع تنفيذ إجراءات لم تنفذها ولا تخترع معلومات. اسم الجهة المالكة عند السؤال عن هويتك هو NAHID LTD، وهي شركة تقنية وبرمجية وإعلامية.'''
+WELCOME='اكتب رسالة ترحيب عربية قصيرة وطبيعية لمستخدم بدأ محادثة مع مساعد ذكاء اصطناعي تابع لـ NAHID LTD. اذكر بإيجاز إمكانية المساعدة في الأسئلة والبرمجة وتحليل الصور والملفات، وادعُ المستخدم لإرسال طلبه. لا تتجاوز 3 أسطر.'
 
 def keyboard():
- return InlineKeyboardMarkup([[InlineKeyboardButton('✨ محادثة جديدة',callback_data='new'),InlineKeyboardButton('🧠 حول المساعد',callback_data='about')],[InlineKeyboardButton('🖼 إنشاء صورة',callback_data='image_help'),InlineKeyboardButton('📄 تصدير آخر رد',callback_data='export')],[InlineKeyboardButton('📚 المساعدة',callback_data='help'),InlineKeyboardButton('🗑 مسح المحادثة',callback_data='clear')],[InlineKeyboardButton('🌐 GLOBALHOLMES LTD',url='https://krar.top/')]])
+ return InlineKeyboardMarkup([[InlineKeyboardButton('✨ محادثة جديدة',callback_data='new'),InlineKeyboardButton('🧠 حول المساعد',callback_data='about')],[InlineKeyboardButton('🖼 إنشاء صورة',callback_data='image_help'),InlineKeyboardButton('📄 تصدير آخر رد',callback_data='export')],[InlineKeyboardButton('📚 المساعدة',callback_data='help'),InlineKeyboardButton('🗑 مسح المحادثة',callback_data='clear')],[InlineKeyboardButton('🌐 NAHID LTD',url='https://krar.top/')]])
 def mini(): return InlineKeyboardMarkup([[InlineKeyboardButton('✨ محادثة جديدة',callback_data='new'),InlineKeyboardButton('🖼 إنشاء صورة',callback_data='image_help')]])
 
 async def init_db():
@@ -114,11 +114,11 @@ async def text_msg(u,c):
 async def buttons(u,c):
  q=u.callback_query; await q.answer(); uid=q.from_user.id; cid=q.message.chat_id
  if q.data in ('new','clear'): await clear(uid,cid); await q.edit_message_text('تم بدء محادثة جديدة. أرسل رسالتك.')
- elif q.data=='about': await q.edit_message_text(f'GLOBALHOLMES LTD\n{TEXT_MODEL}\nتحليل الصور: {VISION_MODEL}',reply_markup=keyboard())
+ elif q.data=='about': await q.edit_message_text(f'NAHID LTD\n{TEXT_MODEL}\nتحليل الصور: {VISION_MODEL}',reply_markup=keyboard())
  elif q.data=='help': await q.edit_message_text('أرسل نصاً أو صورة أو ملف PDF/TXT/MD/CSV/DOCX. استخدم /image للوصف وتوليد صورة، و/export لتصدير آخر إجابة.',reply_markup=keyboard())
  elif q.data=='image_help': await q.edit_message_text('لإنشاء صورة أرسل:\n/image وصف الصورة المطلوبة',reply_markup=keyboard())
  elif q.data=='export': await q.message.reply_text('استخدم /export لتصدير آخر إجابة بصيغتي TXT وDOCX.')
-async def health(r): return web.json_response({'status':'ok','service':'GLOBALHOLMES AI'})
+async def health(r): return web.json_response({'status':'ok','service':'NAHID AI'})
 async def health_server():
  a=web.Application(); a.router.add_get('/',health); a.router.add_get('/health',health); runner=web.AppRunner(a); await runner.setup(); await web.TCPSite(runner,'0.0.0.0',int(os.getenv('PORT','8080'))).start(); return runner
 async def post_init(app): await init_db(); app.bot_data['health_runner']=await health_server()
